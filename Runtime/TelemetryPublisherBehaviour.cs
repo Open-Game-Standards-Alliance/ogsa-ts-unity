@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using UnityEngine;
 using Core = Ogsa.Telemetry;
@@ -37,7 +38,7 @@ namespace Ogsa.Telemetry.Unity
 
         [Header("Cadence")]
         [Range(1, 240)] public double motionHz = 60.0;
-        [Min(0.5)] public double discoveryIntervalSeconds = 2.0;
+        [Min(0.5f)] public double discoveryIntervalSeconds = 2.0;
 
         [Header("Auto-bind")]
         [Tooltip("If set, the object's world pose is bound automatically")]
