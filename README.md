@@ -5,7 +5,7 @@ Unity package for the [OGSA Telemetry Standard (OGSA-TS)](../OGSA-Telemetry-Stan
 platforms, haptic hardware, dashboards, and loggers on the player's local
 network, over UDP multicast. Nothing leaves the LAN.
 
-Status: **bootstrap** — `TelemetryPublisher` component, vendored
+Status: **bootstrap, validated** — end-to-end against the reference receiver in Unity 2022.3 (discovery, motion, channels). `TelemetryPublisher` component, vendored
 `Ogsa.Telemetry` core (netstandard2.1 / C# 9, the same source tested in
 ogsa-ts-dotnet), and a generated demo scene. Validated against the reference
 receiver (`ogsa-ts-dotnet`: `dotnet run --project src/TelemetryReceive`).
