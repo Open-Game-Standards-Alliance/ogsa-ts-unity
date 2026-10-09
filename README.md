@@ -72,3 +72,43 @@ The core source is copied from `ogsa-ts-dotnet` (single source of truth;
 its `netstandard2.1` target + test suite are the compatibility gate). After
 pulling upstream: `./sync-core.sh` — existing `.meta` files are preserved
 so GUIDs stay stable.
+
+## Wiring your game's values
+
+Declare channels once in setup (they lock at the first tick), bind getters to
+whatever your sim already writes, and fire events from gameplay code. Pose
+needs nothing — assign the `Rigidbody` to **Auto-bind**.
+
+```csharp
+// your existing vehicle controller; sim writes these every physics tick
+public float SpeedKmh, EngineRpm; public int Gear; public bool HeadlightsOn;
+
+TelemetryPublisherBehaviour telemetry;
+ChannelHandle rpm, speed, gear, headlights;
+
+void Awake()
+{
+    telemetry = GetComponent<TelemetryPublisherBehaviour>();
+    rpm        = telemetry.DeclareChannel("engine.rpm", Unit.Rpm, min: 0, max: 9000);
+    speed      = telemetry.DeclareChannel("vehicle.speed", Unit.MetrePerSecond);
+    gear       = telemetry.DeclareChannel("transmission.gear", Unit.Scalar);
+    headlights = telemetry.DeclareBooleanChannel("lights.headlights");
+
+    telemetry.BindChannelRaw(rpm,   () => EngineRpm);
+    telemetry.BindChannel(speed,    () => SpeedKmh, Unit.KilometrePerHour); // factor at bind
+    telemetry.BindChannelRaw(gear,  () => Gear);
+    telemetry.BindBooleanChannel(headlights, () => HeadlightsOn);
+}
+
+void OnCollisionEnter(Collision c) // events come from gameplay, not polling
+{
+    telemetry.FireEvent("body.impact",
+        intensity: Mathf.Clamp01(c.relativeVelocity.magnitude / 20f),
+        duration: 0.25f,
+        direction: transform.InverseTransformDirection(-c.relativeVelocity.normalized));
+}
+```
+
+Pull bindings are sampled at the publisher's own rate — you never call
+anything per-frame for them. For exact timing (e.g. a value computed inside
+your physics step), use `SetChannel` from there instead.
