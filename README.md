@@ -13,7 +13,10 @@ receiver (`ogsa-ts-dotnet`: `dotnet run --project src/TelemetryReceive`).
 ## Install
 
 Unity 2022.3+ / Unity 6. Via Package Manager (git URL) once published, or
-copy this folder into `Packages/` for local development.
+copy this folder into `Packages/` for local development. Render-pipeline
+agnostic — nothing here touches rendering, so Built-in, URP, or any future
+pipeline is fine (note: Built-in is deprecated for new projects in
+Unity 6.5+; URP is the safe choice there).
 
 ## Quick start
 
