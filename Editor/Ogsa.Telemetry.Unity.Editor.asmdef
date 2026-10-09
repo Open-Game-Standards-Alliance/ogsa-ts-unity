@@ -1,0 +1,14 @@
+{
+    "name": "Ogsa.Telemetry.Unity.Editor",
+    "rootNamespace": "Ogsa.Telemetry.Unity.Editor",
+    "references": [ "Ogsa.Telemetry.Core", "Ogsa.Telemetry.Unity" ],
+    "includePlatforms": [ "Editor" ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

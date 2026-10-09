@@ -1,0 +1,9 @@
+[Bb]uild/
+[Ll]ibrary/
+[Oo]bj/
+[Uu]ser[Ss]ettings/
+*.csproj
+*.sln
+*.user
+.vs/
+.DS_Store

@@ -1,0 +1,14 @@
+{
+    "name": "Ogsa.Telemetry.Unity",
+    "rootNamespace": "Ogsa.Telemetry.Unity",
+    "references": [ "Ogsa.Telemetry.Core" ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
