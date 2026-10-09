@@ -55,7 +55,7 @@ namespace Ogsa.Telemetry.Unity.Editor
                 Quaternion.Euler(45f, 0f, 0f);
             camGo.AddComponent<AudioListener>();
 
-            var path = $"Assets/Scenes/OGSA-TS-Demo.unity";
+            const string path = "Assets/Scenes/OGSA-TS-Demo.unity";
             System.IO.Directory.CreateDirectory(
                 System.IO.Path.GetDirectoryName(path)!);
             EditorSceneManager.SaveScene(scene, path);
