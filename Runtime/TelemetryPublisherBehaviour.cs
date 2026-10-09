@@ -13,9 +13,11 @@ namespace Ogsa.Telemetry.Unity
     /// game values (pull) or push per tick — declarations lock at the first
     /// tick (start of the first LateUpdate after Start).
     ///
-    /// Unity's world frame (left-handed, Z-forward, Y-up) matches the
-    /// OGSA-TS frame natively — pose values pass straight through with no
-    /// axis remap.
+    /// The sender+publisher are constructed lazily on first use (this
+    /// component's Awake, or your first API call if your script's Awake ran
+    /// earlier — script execution order safe). Unity's world frame
+    /// (left-handed, Z-forward, Y-up) matches the OGSA-TS frame natively —
+    /// pose values pass straight through with no axis remap.
     /// </summary>
     [AddComponentMenu("OGSA-TS/Telemetry Publisher")]
     [DisallowMultipleComponent]
@@ -48,34 +50,56 @@ namespace Ogsa.Telemetry.Unity
         Core.TelemetrySender? _sender;
         bool _tornDown;
 
-        /// <summary>The engine-agnostic publisher (advanced use).</summary>
-        public Core.TelemetryPublisher? Publisher => _publisher;
+        /// <summary>
+        /// The engine-agnostic publisher, constructed on first use from the
+        /// serialized configuration (also the backing for all convenience
+        /// methods here). Throws after this component is destroyed.
+        /// </summary>
+        public Core.TelemetryPublisher Publisher
+        {
+            get
+            {
+                if (_publisher == null)
+                {
+                    if (_tornDown)
+                        throw new ObjectDisposedException(
+                            nameof(TelemetryPublisherBehaviour));
+                    _sender = new Core.TelemetrySender(
+                        string.IsNullOrEmpty(multicastGroup)
+                            ? "239.255.17.17" : multicastGroup,
+                        port, ttl, loopback: true);
+                    _publisher = new Core.TelemetryPublisher(
+                        _sender,
+                        string.IsNullOrEmpty(gameName)
+                            ? Application.productName : gameName,
+                        motionHz, discoveryIntervalSeconds);
+                }
+                return _publisher;
+            }
+        }
 
         void Awake()
         {
-            _sender = new Core.TelemetrySender(
-                string.IsNullOrEmpty(multicastGroup) ? "239.255.17.17" : multicastGroup,
-                port, ttl, loopback: true);
-            _publisher = new Core.TelemetryPublisher(
-                _sender,
-                string.IsNullOrEmpty(gameName) ? Application.productName : gameName,
-                motionHz, discoveryIntervalSeconds);
             if (!string.IsNullOrEmpty(objectName))
-                _publisher.DeclareObject(objectName, typeLabel);
+                Publisher.DeclareObject(objectName, typeLabel);
         }
 
         void Start()
         {
-            if (autoBindRigidbody != null && _publisher != null)
+            if (autoBindRigidbody != null)
             {
                 var rb = autoBindRigidbody;
-                _publisher.BindPose(
+                Publisher.BindPose(
                     () => ToCore(rb.position),
                     () => ToCore(rb.rotation));
             }
         }
 
-        void LateUpdate() => _publisher?.Tick(Time.timeAsDouble);
+        void LateUpdate()
+        {
+            if (_publisher != null)
+                _publisher.Tick(Time.timeAsDouble);
+        }
 
         void OnDestroy()
         {
@@ -91,24 +115,24 @@ namespace Ogsa.Telemetry.Unity
                                                  string description = "",
                                                  double min = double.NaN,
                                                  double max = double.NaN)
-            => _publisher.DeclareChannel(name, unit, description, min, max);
+            => Publisher.DeclareChannel(name, unit, description, min, max);
 
         public Core.ChannelHandle DeclareBooleanChannel(string name,
                                                         string description = "")
-            => _publisher.DeclareBooleanChannel(name, description);
+            => Publisher.DeclareBooleanChannel(name, description);
 
         public void AddWheel(string name, Vector3 offset, float radius,
                              bool driven, bool steered,
                              float stiffness = 65000f, float damping = 5000f)
-            => _publisher.AddWheel(name, ToCore(offset), radius, driven, steered,
-                                   stiffness, damping);
+            => Publisher.AddWheel(name, ToCore(offset), radius, driven, steered,
+                                  stiffness, damping);
 
         // ---- bindings (pull model) ----
 
         /// <summary>Binds pose getters in Unity's world frame (direct map —
         /// Unity is already left-handed, Z-forward, Y-up).</summary>
         public void BindPose(Func<Vector3>? position, Func<Quaternion>? orientation)
-            => _publisher.BindPose(
+            => Publisher.BindPose(
                 position is null ? null : () => ToCore(position()),
                 orientation is null ? null : () => ToCore(orientation()));
 
@@ -117,25 +141,25 @@ namespace Ogsa.Telemetry.Unity
         /// the channel's target unit is precomputed at bind.</summary>
         public void BindChannel(Core.ChannelHandle channel, Func<double> source,
                                 Core.Unit sourceUnit)
-            => _publisher.BindChannel(channel, source, sourceUnit);
+            => Publisher.BindChannel(channel, source, sourceUnit);
 
         public void BindChannelRaw(Core.ChannelHandle channel, Func<double> source)
-            => _publisher.BindChannelRaw(channel, source);
+            => Publisher.BindChannelRaw(channel, source);
 
         public void BindBooleanChannel(Core.ChannelHandle channel, Func<bool> source)
-            => _publisher.BindBooleanChannel(channel, source);
+            => Publisher.BindBooleanChannel(channel, source);
 
         // ---- push model ----
 
         public void SetChannel(Core.ChannelHandle channel, double value)
-            => _publisher.SetChannel(channel, value);
+            => Publisher.SetChannel(channel, value);
 
         public void SetChannel(Core.ChannelHandle channel, bool value)
-            => _publisher.SetChannel(channel, value);
+            => Publisher.SetChannel(channel, value);
 
         public void FireEvent(string name, float intensity = 1f, float duration = 0f,
                               Vector3 direction = default)
-            => _publisher.FireEvent(name, intensity, duration, ToCore(direction));
+            => Publisher.FireEvent(name, intensity, duration, ToCore(direction));
 
         // Unity's numeric types map 1:1 onto the core's System.Numerics —
         // same axes, same order; this is a plain component copy.
