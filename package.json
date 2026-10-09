@@ -4,6 +4,10 @@
   "displayName": "OGSA Telemetry Standard (OGSA-TS)",
   "description": "Broadcast OGSA-TS motion/event telemetry over UDP multicast to motion platforms, haptic hardware, and dashboards on the local network. Declare channels with required units, bind game values, publish.",
   "unity": "2022.3",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/BrianGilbert"
+  },
   "author": { "name": "Open Game Standards Alliance", "url": "https://github.com/Open-Game-Standards-Alliance" },
   "license": "MIT"
 }
