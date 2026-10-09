@@ -42,14 +42,14 @@ namespace Ogsa.Telemetry.Unity
 
         [Header("Auto-bind")]
         [Tooltip("If set, the object's world pose is bound automatically")]
-        public Rigidbody autoBindRigidbody;
+        public Rigidbody? autoBindRigidbody;
 
-        Core.TelemetryPublisher _publisher;
-        Core.TelemetrySender _sender;
+        Core.TelemetryPublisher? _publisher;
+        Core.TelemetrySender? _sender;
         bool _tornDown;
 
         /// <summary>The engine-agnostic publisher (advanced use).</summary>
-        public Core.TelemetryPublisher Publisher => _publisher;
+        public Core.TelemetryPublisher? Publisher => _publisher;
 
         void Awake()
         {
@@ -66,7 +66,7 @@ namespace Ogsa.Telemetry.Unity
 
         void Start()
         {
-            if (autoBindRigidbody != null)
+            if (autoBindRigidbody != null && _publisher != null)
             {
                 var rb = autoBindRigidbody;
                 _publisher.BindPose(
@@ -75,7 +75,7 @@ namespace Ogsa.Telemetry.Unity
             }
         }
 
-        void LateUpdate() => _publisher.Tick(Time.timeAsDouble);
+        void LateUpdate() => _publisher?.Tick(Time.timeAsDouble);
 
         void OnDestroy()
         {

@@ -12,17 +12,23 @@ namespace Ogsa.Telemetry.Unity.Editor
         public float angularSpeed = 0.8f; // rad/s
         public float maxRpm = 6500f;
 
-        TelemetryPublisherBehaviour _telemetry;
-        Ogsa.Telemetry.ChannelHandle _rpm;
-        Ogsa.Telemetry.ChannelHandle _speed;
-        Ogsa.Telemetry.ChannelHandle _headlights;
+        TelemetryPublisherBehaviour? _telemetry;
+        Ogsa.Telemetry.ChannelHandle? _rpm;
+        Ogsa.Telemetry.ChannelHandle? _speed;
+        Ogsa.Telemetry.ChannelHandle? _headlights;
         double _t;
-        Rigidbody _rb;
+        Rigidbody? _rb;
 
         void Awake()
         {
             _telemetry = GetComponent<TelemetryPublisherBehaviour>();
             _rb = GetComponent<Rigidbody>();
+            if (_telemetry == null || _rb == null)
+            {
+                Debug.LogError("DemoVehicleDriver needs a TelemetryPublisherBehaviour and a Rigidbody on the same GameObject");
+                enabled = false;
+                return;
+            }
             _rpm = _telemetry.DeclareChannel(
                 "engine.rpm", Ogsa.Telemetry.Unit.Rpm,
                 "Demo engine speed", 0, 9000);
@@ -43,6 +49,7 @@ namespace Ogsa.Telemetry.Unity.Editor
 
         void FixedUpdate()
         {
+            if (_rb == null) return;
             _t += Time.fixedDeltaTime;
             float yaw = (float)(_t * angularSpeed);
             // kinematic demo pose (teleports the rigidbody; fine for wire demo)
