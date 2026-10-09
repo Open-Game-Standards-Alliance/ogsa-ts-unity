@@ -18,12 +18,16 @@
     <Compile Include="../Runtime/Core/**/*.cs" />
     <Compile Include="../Runtime/TelemetryPublisherBehaviour.cs" />
     <Compile Include="../Runtime/Demo/DemoVehicleDriver.cs" />
+    <!-- EditMode tests use plain NUnit ([Test] only, no Unity coroutines),
+         so they compile here too — the whole C# surface is smoke-checked -->
+    <Compile Include="../Tests/Editor/*.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- must match the version the vendored core is built against
          (Runtime/Core/ThirdParty carries the Unity-side copy) -->
     <PackageReference Include="Capnp.Net.Runtime" Version="1.3.118" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
   </ItemGroup>
 
 </Project>

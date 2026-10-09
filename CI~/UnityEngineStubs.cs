@@ -11,10 +11,23 @@
 #nullable enable
 namespace UnityEngine
 {
-    public class MonoBehaviour
+    public class Component
     {
         public bool enabled { get; set; }
         public T GetComponent<T>() => default!;
+    }
+
+    public class MonoBehaviour : Component { }
+
+    public class Object
+    {
+        public static void DestroyImmediate(Object obj) { }
+    }
+
+    public sealed class GameObject : Object
+    {
+        public GameObject(string name) { }
+        public T AddComponent<T>() where T : Component, new() => new T();
     }
 
     public struct Vector3
