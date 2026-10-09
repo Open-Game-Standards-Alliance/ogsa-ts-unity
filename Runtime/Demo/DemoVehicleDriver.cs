@@ -39,9 +39,10 @@ namespace Ogsa.Telemetry.Unity.Demo
                 "lights.headlights", "Headlights on/off");
 
             // game-native units — the publisher converts on the wire:
-            // speed measured in km/h here, declared m/s above.
-            _telemetry.BindChannel(_speed, () => angularSpeed * radius,
-                                   Ogsa.Telemetry.Unit.MetrePerSecond);
+            // speed is measured in km/h here (ω·r in m/s × 3.6), declared
+            // m/s above.
+            _telemetry.BindChannel(_speed, () => angularSpeed * radius * 3.6,
+                                   Ogsa.Telemetry.Unit.KilometrePerHour);
             _telemetry.BindChannelRaw(_rpm, () =>
                 maxRpm * (0.5 + 0.5 * Mathf.Sin((float)_t * 2f)));
             _telemetry.BindBooleanChannel(_headlights, () => true);
