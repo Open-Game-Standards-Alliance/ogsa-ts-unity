@@ -1,0 +1,70 @@
+name: ci
+# Tier 1 (no Unity install, no license):
+#   core-drift    — the vendored core must stay byte-identical to
+#                   ogsa-ts-dotnet (fires on THIS repo's pushes, so
+#                   direct edits to the vendored copy are caught here)
+#   compile-smoke — Runtime sources (core + wrapper + demo driver)
+#                   compiled against CI~/ UnityEngine stubs with plain
+#                   dotnet; catches API drift in the Unity-facing code
+#   package       — package.json sanity
+# Tier 2 (needs a Unity license secret; uncomment when ready):
+#   game-ci EditMode tests via a host TestProject/ with the package as
+#   a file: dependency — see the commented job below.
+on: [push, pull_request]
+
+env:
+  ORG: Open-Game-Standards-Alliance
+
+jobs:
+  core-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.ORG }}/ogsa-ts-dotnet
+          path: ogsa-ts-dotnet
+      - name: Vendored core matches ogsa-ts-dotnet
+        run: diff -r -x '*.csproj' -x obj -x bin -x '*.meta' -x '*.asmdef' -x ThirdParty
+              ogsa-ts-dotnet/src/Ogsa.Telemetry Runtime/Core
+        # (.meta/asmdef/ThirdParty are Unity packaging sidecars, not vendored source)
+
+  compile-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Compile Runtime against UnityEngine stubs
+        run: dotnet build CI~/ci-smoke.csproj --nologo
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: package.json sanity
+        run: |
+          python3 - << 'EOF'
+          import json
+          p = json.load(open("package.json"))
+          assert p.get("name"), "missing name"
+          assert p.get("version"), "missing version"
+          assert p.get("displayName"), "missing displayName"
+          print(f"package ok: {p['name']} {p['version']}")
+          EOF
+
+  # Tier 2 — real editor tests via game-ci (needs UNITY_LICENSE secret):
+  # editmode:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: game-ci/unity-test-runner@v4
+  #       with:
+  #         projectPath: TestProject
+  #         testMode: EditMode
+  #         unityVersion: auto
+  #         githubToken: ${{ secrets.GITHUB_TOKEN }}

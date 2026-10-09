@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- ci-smoke — compiles the package's Runtime sources (vendored core +
+       Unity wrapper + demo driver) against the UnityEngine stubs in this
+       folder, with plain dotnet. Catches API drift/typos in the only
+       Unity-specific code without a Unity install or license. CI~/ is
+       hidden from Unity itself (~ suffix). -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <!-- C# 9 = the vendored core's ceiling (Unity compiler parity) -->
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="UnityEngineStubs.cs" />
+    <Compile Include="../Runtime/Core/**/*.cs" />
+    <Compile Include="../Runtime/TelemetryPublisherBehaviour.cs" />
+    <Compile Include="../Runtime/Demo/DemoVehicleDriver.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- must match the version the vendored core is built against
+         (Runtime/Core/ThirdParty carries the Unity-side copy) -->
+    <PackageReference Include="Capnp.Net.Runtime" Version="1.3.118" />
+  </ItemGroup>
+
+</Project>

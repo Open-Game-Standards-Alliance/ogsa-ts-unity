@@ -7,3 +7,6 @@
 *.user
 .vs/
 .DS_Store
+# CI smoke project is committed on purpose (everything else csproj is generated)
+!CI~/ci-smoke.csproj
+CI~/bin/

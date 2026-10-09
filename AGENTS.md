@@ -15,3 +15,9 @@
   Open-Game-Standards-Alliance knowledge base (knowledge/README.md bridge).
 - The Capnp.Net.Runtime.dll under Runtime/Core/ThirdParty is refreshed
   manually from the NuGet cache when the dependency version bumps.
+- CI (`.github/workflows/ci.yml`), license-free: vendored-core drift vs
+  ogsa-ts-dotnet, compile smoke (`CI~/ci-smoke.csproj` compiles Runtime
+  against stub UnityEngine — CI~/ is invisible to Unity via the ~ suffix;
+  extend stubs only with what Runtime actually references), package.json
+  sanity. Tier-2 game-ci EditMode testing is a commented job pending a
+  Unity license secret.
