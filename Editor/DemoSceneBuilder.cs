@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Ogsa.Telemetry.Unity.Demo;
 
 namespace Ogsa.Telemetry.Unity.Editor
 {
