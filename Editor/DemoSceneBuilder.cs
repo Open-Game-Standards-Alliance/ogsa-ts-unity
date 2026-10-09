@@ -13,6 +13,13 @@ namespace Ogsa.Telemetry.Unity.Editor
         [MenuItem("GameObject/OGSA-TS/Create Demo Scene")]
         public static void Create()
         {
+            if (Application.isPlaying)
+            {
+                EditorUtility.DisplayDialog("OGSA-TS Demo",
+                    "Exit Play mode first — the demo scene is generated in edit mode.", "OK");
+                return;
+            }
+
             var scene = EditorSceneManager.NewScene(
                 NewSceneSetup.EmptyScene, NewSceneMode.Single);
 

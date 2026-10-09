@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine;
 
-namespace Ogsa.Telemetry.Unity.Editor
+namespace Ogsa.Telemetry.Unity.Demo
 {
     /// <summary>Demo driver: moves a rigidbody cube in a circle and feeds a
     /// fake RPM + speed channel so the demo scene is immediately visible in
