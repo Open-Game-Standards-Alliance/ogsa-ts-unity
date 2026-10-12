@@ -2,7 +2,8 @@
 
 Opens the package (`file:../..`) in a real editor with no setup:
 
-1. Open this folder in Unity 2022.3 LTS (Hub → Add → this folder).
+1. Open this folder in Unity 2022.3 LTS (Hub → Add → this folder; the
+   `Assets/` folder is what makes Hub recognize it as a project).
 2. First open resolves the local package and compiles everything.
 
 What it gives you:

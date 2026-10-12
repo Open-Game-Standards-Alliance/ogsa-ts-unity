@@ -40,4 +40,4 @@ if ! cmp -s "$SRC/../../capnp/Capnp.Net.Runtime.dll" "Runtime/Core/ThirdParty/Ca
   echo "      bumping the dependency in ogsa-ts-dotnet."
 fi
 
-[ "$changed" -eq 0 ] && echo "core up to date"
+if [ "$changed" -eq 0 ]; then echo "core up to date"; fi
