@@ -46,9 +46,23 @@ namespace Ogsa.Telemetry.Unity
         [Tooltip("If set, the object's world pose is bound automatically")]
         public Rigidbody? autoBindRigidbody;
 
+        [Tooltip("Emit the bodyDynamics variant (specific force + angular " +
+                 "rates — the motion-cueing inputs) derived per tick from " +
+                 "the bound body's pose and engine-measured velocity, via " +
+                 "the core's BodyDynamicsDeriver (accelerometer-style: " +
+                 "heave reads +9.80665 at rest)")]
+        public bool sendBodyDynamics = true;
+
         Core.TelemetryPublisher? _publisher;
         Core.TelemetrySender? _sender;
         bool _tornDown;
+        readonly Core.BodyDynamicsDeriver _deriver = new();
+
+        /// <summary>The pose→dynamics deriver behind sendBodyDynamics — for
+        /// manual binders: sample it per tick (Unity frame is OGSA-TS
+        /// native, no conversion) then Publisher.BindBodyDynamics(() =>
+        /// (deriver.SpecificForce, deriver.AngularVelocity)).</summary>
+        public Core.BodyDynamicsDeriver BodyDeriver => _deriver;
 
         /// <summary>
         /// The engine-agnostic publisher, constructed on first use from the
@@ -92,13 +106,27 @@ namespace Ogsa.Telemetry.Unity
                 Publisher.BindPose(
                     () => ToCore(rb.position),
                     () => ToCore(rb.rotation));
+                if (sendBodyDynamics)
+                    Publisher.BindBodyDynamics(
+                        () => (_deriver.SpecificForce, _deriver.AngularVelocity));
             }
         }
 
         void LateUpdate()
         {
-            if (_publisher != null)
-                _publisher.Tick(Time.timeAsDouble);
+            var pub = _publisher;
+            if (pub == null) return;
+            // derivation runs every tick with a pose (not just at publish
+            // cadence): engine-measured velocity, quaternion-delta rates;
+            // Unity's world frame is OGSA-TS native — values pass unmapped
+            if (sendBodyDynamics && autoBindRigidbody != null)
+            {
+                var rb = autoBindRigidbody;
+                var t = Time.timeAsDouble;
+                _deriver.Sample(t, ToCore(rb.position), ToCore(rb.rotation),
+                    hasVelocity: true, engineVelocity: ToCore(rb.velocity));
+            }
+            pub.Tick(Time.timeAsDouble);
         }
 
         void OnDestroy()
