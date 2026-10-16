@@ -47,6 +47,7 @@ namespace UnityEngine
     {
         public Vector3 position { get; set; }
         public Quaternion rotation { get; set; }
+        public Vector3 velocity { get; set; }
         public void MovePosition(Vector3 position) { }
         public void MoveRotation(Quaternion rot) { }
     }

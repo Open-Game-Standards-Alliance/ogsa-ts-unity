@@ -155,6 +155,14 @@ namespace Ogsa.Telemetry.Unity
             => Publisher.AddWheel(name, ToCore(offset), radius, driven, steered,
                                   stiffness, damping);
 
+        /// <summary>Declares or updates the ambient environment carried in
+        /// discovery (re-sent on change — e.g. entering a space level:
+        /// gravity 0, medium vacuum). Callable before the first tick and
+        /// afterwards.</summary>
+        public void SetEnvironment(float gravity, float airDensity, float temperature,
+                                   float pressure, CapnpGen.ContactMedium medium)
+            => Publisher.SetEnvironment(gravity, airDensity, temperature, pressure, medium);
+
         // ---- bindings (pull model) ----
 
         /// <summary>Binds pose getters in Unity's world frame (direct map —
