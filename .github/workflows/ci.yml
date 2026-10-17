@@ -19,8 +19,8 @@ jobs:
   core-drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
           repository: ${{ env.ORG }}/ogsa-ts-dotnet
           path: ogsa-ts-dotnet
@@ -32,8 +32,8 @@ jobs:
   compile-smoke:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "8.0.x"
       - name: Compile Runtime against UnityEngine stubs
@@ -42,8 +42,8 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.x"
       - name: package.json sanity
@@ -61,7 +61,7 @@ jobs:
   # editmode:
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     - uses: game-ci/unity-test-runner@v4
   #       with:
   #         projectPath: TestProject
