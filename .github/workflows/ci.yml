@@ -10,14 +10,32 @@ name: ci
 # Tier 2 (needs a Unity license secret; uncomment when ready):
 #   game-ci EditMode tests via a host TestProject/ with the package as
 #   a file: dependency — see the commented job below.
-on: [push, pull_request]
+#
+# repository_dispatch (type sibling-pushed): fired by ogsa-ts-dotnet after
+# its own push, since core-drift below checks that repo and can fail
+# purely from push-order timing — self-heals without a manual re-run.
+# compile-smoke/package skip on this trigger; they're this repo's own
+# correctness and unaffected by ogsa-ts-dotnet's push.
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [sibling-pushed]
 
 env:
   ORG: Open-Game-Standards-Alliance
 
 jobs:
   core-drift:
+    # Advisory, not blocking: this fetches ogsa-ts-dotnet's CURRENT default
+    # branch, so pushing a core change here before ogsa-ts-dotnet carries
+    # it (or vice versa — ogsa-ts-dotnet's own core-drift job checks this
+    # repo back) shows up as a transient failure that has nothing to do
+    # with this push's own correctness. Treat a red run here right after a
+    # multi-repo change as a prompt to check both repos were pushed, not
+    # as a broken build.
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
@@ -30,6 +48,7 @@ jobs:
         # (.meta/asmdef/ThirdParty are Unity packaging sidecars, not vendored source)
 
   compile-smoke:
+    if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -40,6 +59,7 @@ jobs:
         run: dotnet build CI~/ci-smoke.csproj --nologo
 
   package:
+    if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -68,3 +88,37 @@ jobs:
   #         testMode: EditMode
   #         unityVersion: auto
   #         githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-dotnet:
+    # ogsa-ts-dotnet's own core-drift/lockstep jobs check this repo (and
+    # ogsa-ts-godot/ogsa-ts-unreal) back — tell it to recheck now that
+    # this push landed. See ogsa-ts-dotnet's notify-unity job for the
+    # reverse direction and the CROSS_REPO_DISPATCH_TOKEN this shares;
+    # skipped entirely (not failed) while that secret is unset.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [compile-smoke, package]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      # the secrets context can't be read directly in an `if:` (GitHub
+      # blocks it there); gate through this env var instead
+      HAS_DISPATCH_TOKEN: ${{ secrets.CROSS_REPO_DISPATCH_TOKEN != '' }}
+    steps:
+      - name: Dispatch sibling-pushed to ogsa-ts-dotnet
+        if: env.HAS_DISPATCH_TOKEN == 'true'
+        env:
+          TOKEN: ${{ secrets.CROSS_REPO_DISPATCH_TOKEN }}
+        run: |
+          status=$(curl -s -o /tmp/dispatch-response.json -w '%{http_code}' -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ env.ORG }}/ogsa-ts-dotnet/dispatches" \
+            -d "{\"event_type\":\"sibling-pushed\",\"client_payload\":{\"source\":\"${{ github.repository }}\",\"sha\":\"${{ github.sha }}\"}}")
+          echo "HTTP status: $status"
+          cat /tmp/dispatch-response.json 2>/dev/null || true
+          # the response body is GitHub's own error text, never the token
+          # (which curl never prints) — safe to show in logs for diagnosis
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "dispatch to ogsa-ts-dotnet failed (see response above)"
+            exit 1
+          fi
