@@ -49,7 +49,11 @@ jobs:
 
   compile-smoke:
     if: github.event_name != 'repository_dispatch'
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
