@@ -7,7 +7,24 @@ set -euo pipefail
 SRC="../ogsa-ts-dotnet/src/Ogsa.Telemetry"
 DST="Runtime/Core"
 
-guid() { powershell -NoProfile -Command "[guid]::NewGuid().ToString('N')" | tr -d '\r\n'; }
+# Portable 32-char lowercase-hex GUID (Unity's .meta format), without
+# depending on `powershell`, which doesn't exist off Windows.
+guid() {
+  if command -v uuidgen >/dev/null 2>&1; then
+    uuidgen | tr -d '-' | tr '[:upper:]' '[:lower:]'
+  elif command -v python3 >/dev/null 2>&1; then
+    python3 -c 'import uuid; print(uuid.uuid4().hex)'
+  elif [ -r /proc/sys/kernel/random/uuid ]; then
+    tr -d '-' < /proc/sys/kernel/random/uuid
+  elif command -v pwsh >/dev/null 2>&1; then
+    pwsh -NoProfile -Command "[guid]::NewGuid().ToString('N')" | tr -d '\r\n'
+  elif command -v powershell >/dev/null 2>&1; then
+    powershell -NoProfile -Command "[guid]::NewGuid().ToString('N')" | tr -d '\r\n'
+  else
+    echo "guid: no GUID generator found (need uuidgen, python3, /proc/sys/kernel/random/uuid, or pwsh/powershell)" >&2
+    exit 1
+  fi
+}
 cs_meta() { # $1 = cs path
   local m="$1.meta"
   [ -f "$m" ] && return
