@@ -22,8 +22,15 @@ networking and the unit-conversion math.
 
 ## Install
 
-Unity 2022.3+ / Unity 6. Via Package Manager (git URL) once published, or
-copy this folder into `Packages/` for local development. Render-pipeline
+Unity 2022.3+ / Unity 6. Add it to `Packages/manifest.json` as a git
+dependency pinned to a release tag (or a full commit hash):
+
+```json
+"com.ogsa.telemetry.unity": "https://github.com/Open-Game-Standards-Alliance/ogsa-ts-unity.git#v0.2.0"
+```
+
+or copy this folder into `Packages/` for local development. The package
+is plain C# source — nothing precompiled. Render-pipeline
 agnostic — nothing here touches rendering, so Built-in, URP, or any future
 pipeline is fine (note: Built-in is deprecated for new projects in
 Unity 6.5+; URP is the safe choice there).
@@ -62,7 +69,9 @@ rate regardless of your frame rate.
 
 ## Demo scene
 
-Menu: **GameObject > OGSA-TS > Create Demo Scene** — builds a wired demo
+Import the **Demo** sample (Package Manager > OGSA Telemetry Standard >
+Samples), then use the menu **GameObject > OGSA-TS > Create Demo Scene** —
+it builds a wired demo
 vehicle (kinematic cube on a circle, rpm/speed/headlights channels). Press
 Play and run the reference receiver to watch discovery, motion, and
 channels on the wire.
@@ -73,7 +82,7 @@ channels on the wire.
 |---|---|
 | `Runtime/TelemetryPublisherBehaviour.cs` | Unity-facing component: Inspector config, Unity-typed bindings, Rigidbody auto-bind |
 | `Runtime/Core/` | Vendored `Ogsa.Telemetry` core + generated schema writers (`sync-core.sh` refreshes from `../ogsa-ts-dotnet`) |
-| `Editor/` | Demo scene builder + demo vehicle driver |
+| `Samples~/Demo/` | Demo vehicle driver + demo scene builder (an importable sample, so it never compiles into games that use the package) |
 
 ## Vendored core discipline
 
