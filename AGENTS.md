@@ -20,6 +20,6 @@
   ogsa-ts-dotnet, compile smoke (`CI~/ci-smoke.csproj` compiles Runtime
   AND Tests/Editor against stub UnityEngine — CI~/ is invisible to Unity
   via the ~ suffix; extend stubs only with what those sources actually
-  reference), package.json sanity. TestProject/ hosts the package in a
+  reference), package.json sanity. TestProject~/ hosts the package in a
   real editor (demo + Test Runner); Tier-2 game-ci EditMode testing is a
   commented job pending a Unity license secret.

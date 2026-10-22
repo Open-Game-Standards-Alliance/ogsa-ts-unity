@@ -7,7 +7,7 @@ namespace Ogsa.Telemetry.Unity.Tests
 {
     /// <summary>EditMode tests for the Unity wrapper — no network sends
     /// (Tick is never called; sockets are created lazily and disposed on
-    /// destroy). These run in-editor via TestProject/ and become the CI
+    /// destroy). These run in-editor via TestProject~/ and become the CI
     /// EditMode suite under game-ci (see .github/workflows/ci.yml).</summary>
     public class TelemetryPublisherBehaviourTests
     {

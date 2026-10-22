@@ -10,3 +10,7 @@
 # CI smoke project is committed on purpose (everything else csproj is generated)
 !CI~/ci-smoke.csproj
 CI~/bin/
+
+# local graphify output (globally ignored); Unity writes a .meta beside it
+# when it imports the package root
+graphify-out.meta
