@@ -50,11 +50,15 @@ for f in "$SRC"/Schema/*.cs; do
   cs_meta "$DST/Schema/$(basename "$f")"
 done
 
-# Capnp.Net.Runtime (netstandard2.0 build — Unity-compatible)
-if ! cmp -s "$SRC/../../capnp/Capnp.Net.Runtime.dll" "Runtime/Core/ThirdParty/Capnp.Net.Runtime.dll" 2>/dev/null; then
-  echo "note: refresh Runtime/Core/ThirdParty/Capnp.Net.Runtime.dll from the"
-  echo "      NuGet cache (capnp.net.runtime/<ver>/lib/netstandard2.0/) after"
-  echo "      bumping the dependency in ogsa-ts-dotnet."
-fi
+# Mirror deletions: a vendored source whose upstream file is gone (moved
+# or renamed in ogsa-ts-dotnet) is removed together with its .meta.
+for f in "$DST"/*.cs "$DST"/Schema/*.cs; do
+  [ -f "$f" ] || continue
+  if [ ! -f "$SRC/${f#"$DST"/}" ]; then
+    rm -f "$f" "$f.meta"
+    echo "removed: $f"
+    changed=1
+  fi
+done
 
 if [ "$changed" -eq 0 ]; then echo "core up to date"; fi

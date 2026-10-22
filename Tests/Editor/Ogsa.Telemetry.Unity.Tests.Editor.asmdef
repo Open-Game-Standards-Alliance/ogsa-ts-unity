@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Ogsa.Telemetry.Unity"
+        "Ogsa.Telemetry.Unity",
+        "Ogsa.Telemetry.Core"
     ],
     "includePlatforms": [
         "Editor"

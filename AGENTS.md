@@ -13,8 +13,9 @@
   conversions are theirs to own).
 - Product docs describe current state only; history lives in the
   Open-Game-Standards-Alliance knowledge base (knowledge/README.md bridge).
-- The Capnp.Net.Runtime.dll under Runtime/Core/ThirdParty is refreshed
-  manually from the NuGet cache when the dependency version bumps.
+- The package ships no DLLs: the vendored core writes frames with its own
+  generated schema writers (canonical OGSA encoding). Never add a
+  Cap'n Proto runtime or other precompiled dependency to Runtime/.
 - CI (`.github/workflows/ci.yml`), license-free: vendored-core drift vs
   ogsa-ts-dotnet, compile smoke (`CI~/ci-smoke.csproj` compiles Runtime
   AND Tests/Editor against stub UnityEngine — CI~/ is invisible to Unity
