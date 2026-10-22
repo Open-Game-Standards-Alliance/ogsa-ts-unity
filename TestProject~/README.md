@@ -1,4 +1,7 @@
-# TestProject — host project for the package
+# TestProject~ — host project for the package
+
+The `~` suffix keeps Unity from importing this folder as package content
+(it lives inside the package root).
 
 Opens the package (`file:../..`) in a real editor with no setup:
 
@@ -16,4 +19,4 @@ What it gives you:
 
 CI: this is the project the commented `editmode` job in
 `.github/workflows/ci.yml` consumes once a `UNITY_LICENSE` secret is
-configured (game-ci/unity-test-runner, projectPath: TestProject).
+configured (game-ci/unity-test-runner, projectPath: TestProject~).
