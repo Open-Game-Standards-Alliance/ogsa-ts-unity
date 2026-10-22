@@ -11,7 +11,8 @@ Opens the package (`file:../..`) in a real editor with no setup:
 
 What it gives you:
 
-- **Demo scene**: menu `GameObject > OGSA-TS > Create Demo Scene`, then
+- **Demo scene**: import the **Demo** sample (Package Manager), then menu
+  `GameObject > OGSA-TS > Create Demo Scene`, then
   Play, then pair with ogsa-ts-dotnet's TelemetryReceive
   (`dotnet run --project src/TelemetryReceive`).
 - **EditMode tests**: Window > General > Test Runner (the package's

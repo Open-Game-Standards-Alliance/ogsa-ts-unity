@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- ci-smoke — compiles the package's Runtime sources (vendored core +
-       Unity wrapper + demo driver) against the UnityEngine stubs in this
+       Unity wrapper) plus the Demo sample's driver against the UnityEngine stubs in this
        folder, with plain dotnet. Catches API drift/typos in the only
        Unity-specific code without a Unity install or license. CI~/ is
        hidden from Unity itself (~ suffix). -->
@@ -17,7 +17,7 @@
     <Compile Include="UnityEngineStubs.cs" />
     <Compile Include="../Runtime/Core/**/*.cs" />
     <Compile Include="../Runtime/TelemetryPublisherBehaviour.cs" />
-    <Compile Include="../Runtime/Demo/DemoVehicleDriver.cs" />
+    <Compile Include="../Samples~/Demo/DemoVehicleDriver.cs" />
     <!-- EditMode tests use plain NUnit ([Test] only, no Unity coroutines),
          so they compile here too — the whole C# surface is smoke-checked -->
     <Compile Include="../Tests/Editor/*.cs" />

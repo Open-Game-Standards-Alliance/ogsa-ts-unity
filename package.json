@@ -1,12 +1,19 @@
 {
   "name": "com.ogsa.telemetry.unity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "OGSA Telemetry Standard (OGSA-TS)",
   "description": "Broadcast OGSA-TS motion/event telemetry over UDP multicast to motion platforms, haptic hardware, and dashboards on the local network. Declare channels with required units, bind game values, publish.",
   "unity": "2022.3",
   "dependencies": {
     "com.unity.modules.physics": "1.0.0"
   },
+  "samples": [
+    {
+      "displayName": "Demo",
+      "description": "A wired demo vehicle (kinematic cube on a circle with rpm/speed/headlights channels) and the GameObject > OGSA-TS > Create Demo Scene menu.",
+      "path": "Samples~/Demo"
+    }
+  ],
   "funding": {
     "type": "individual",
     "url": "https://github.com/sponsors/BrianGilbert"

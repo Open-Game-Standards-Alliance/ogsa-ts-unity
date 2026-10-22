@@ -5,7 +5,7 @@
 // a Unity install. NOT for editor use; extend only with what the
 // Runtime sources actually reference.
 //
-// Not stubbed: the Editor/ scripts (DemoSceneBuilder) — they pull in a
+// Not stubbed: the Demo sample's editor script (DemoSceneBuilder) — it pulls in a
 // much larger UnityEditor surface for demo tooling; the smoke compiles
 // the shipped Runtime logic.
 #nullable enable

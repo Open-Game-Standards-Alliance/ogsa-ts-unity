@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using Ogsa.Telemetry.Unity.Demo;
 
-namespace Ogsa.Telemetry.Unity.Editor
+namespace Ogsa.Telemetry.Unity.Demo.Editor
 {
     /// <summary>Builds a self-contained demo scene: a wired cube "vehicle"
     /// with a TelemetryPublisher, kinematic driver, ground, and camera.
