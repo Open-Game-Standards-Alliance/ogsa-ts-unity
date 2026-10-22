@@ -12,6 +12,12 @@ Status: **bootstrap, validated** — end-to-end against the reference receiver i
 ogsa-ts-dotnet), and a generated demo scene. Validated against the reference
 receiver (`ogsa-ts-dotnet`: `dotnet run --project src/TelemetryReceive`).
 
+**Built with AI assistance.** Significant portions of this package
+(including the vendored core and the Unity-facing wrapper) were written
+with AI coding assistance under human direction and
+review. Review and test before relying on it, especially around
+networking and the unit-conversion math.
+
 ## Install
 
 Unity 2022.3+ / Unity 6. Via Package Manager (git URL) once published, or
