@@ -43,9 +43,9 @@ jobs:
           repository: ${{ env.ORG }}/ogsa-ts-dotnet
           path: ogsa-ts-dotnet
       - name: Vendored core matches ogsa-ts-dotnet
-        run: diff -r -x '*.csproj' -x obj -x bin -x '*.meta' -x '*.asmdef' -x ThirdParty
+        run: diff -r -x '*.csproj' -x obj -x bin -x '*.meta' -x '*.asmdef'
               ogsa-ts-dotnet/src/Ogsa.Telemetry Runtime/Core
-        # (.meta/asmdef/ThirdParty are Unity packaging sidecars, not vendored source)
+        # (.meta/asmdef are Unity packaging sidecars, not vendored source)
 
   compile-smoke:
     if: github.event_name != 'repository_dispatch'

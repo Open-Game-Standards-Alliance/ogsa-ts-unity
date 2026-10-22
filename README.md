@@ -9,7 +9,9 @@ Community & support: [Discord](https://discord.gg/tseF4Q6U99)
 
 Status: **bootstrap, validated** — end-to-end against the reference receiver in Unity 2022.3 (discovery, motion, channels). `TelemetryPublisher` component, vendored
 `Ogsa.Telemetry` core (netstandard2.1 / C# 9, the same source tested in
-ogsa-ts-dotnet), and a generated demo scene. Validated against the reference
+ogsa-ts-dotnet; plain C# source, no DLLs — it writes Cap'n Proto frames
+itself, with no reflection, so it runs under IL2CPP on every platform),
+and a generated demo scene. Validated against the reference
 receiver (`ogsa-ts-dotnet`: `dotnet run --project src/TelemetryReceive`).
 
 **Built with AI assistance.** Significant portions of this package
@@ -70,8 +72,7 @@ channels on the wire.
 | Path | Contents |
 |---|---|
 | `Runtime/TelemetryPublisherBehaviour.cs` | Unity-facing component: Inspector config, Unity-typed bindings, Rigidbody auto-bind |
-| `Runtime/Core/` | Vendored `Ogsa.Telemetry` core + generated Cap'n Proto bindings (`sync-core.sh` refreshes from `../ogsa-ts-dotnet`) |
-| `Runtime/Core/ThirdParty/` | `Capnp.Net.Runtime` (netstandard2.0, MIT) |
+| `Runtime/Core/` | Vendored `Ogsa.Telemetry` core + generated schema writers (`sync-core.sh` refreshes from `../ogsa-ts-dotnet`) |
 | `Editor/` | Demo scene builder + demo vehicle driver |
 
 ## Vendored core discipline
