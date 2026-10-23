@@ -1,6 +1,11 @@
 # ogsa-ts-unity
 
-Unity package for the [OGSA Telemetry Standard (OGSA-TS)](../OGSA-Telemetry-Standard)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="Documentation~/telemetry-standard-dark.svg">
+  <img align="right" width="120" src="Documentation~/telemetry-standard.svg" alt="OGSA Telemetry Standard logo">
+</picture>
+
+Unity package for the [OGSA Telemetry Standard (OGSA-TS)](https://github.com/Open-Game-Standards-Alliance/OGSA-Telemetry-Standard)
 — broadcast live motion and event telemetry from a Unity game to motion
 platforms, haptic hardware, dashboards, and loggers on the player's local
 network, over UDP multicast. Nothing leaves the LAN.
