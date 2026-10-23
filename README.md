@@ -96,6 +96,14 @@ its `netstandard2.1` target + test suite are the compatibility gate). After
 pulling upstream: `./sync-core.sh` — existing `.meta` files are preserved
 so GUIDs stay stable.
 
+## Pause
+
+The publisher keeps streaming while the game is paused and reports the
+pause on the ratified `session.paused` channel ([CONVENTIONS C-11](https://github.com/Open-Game-Standards-Alliance/OGSA-Telemetry-Standard/blob/main/CONVENTIONS.md#c-11-pause)), so motion
+rigs and haptics come to rest instead of freezing mid-move or dropping
+the session. `Time.timeScale == 0` is detected automatically (`autoDetectPause`);
+games that pause another way call `SetPaused(true/false)`. Nothing to wire.
+
 ## Wiring your game's values
 
 Declare channels once in setup (they lock at the first tick), bind getters to

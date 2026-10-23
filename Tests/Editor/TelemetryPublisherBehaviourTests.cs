@@ -62,6 +62,18 @@ namespace Ogsa.Telemetry.Unity.Tests
         }
 
         [Test]
+        public void Pause_Is_Reported_Through_The_Core()
+        {
+            // EditMode skips Awake, so declare the channel the way Awake would
+            var go = MakePublisher(out var behaviour);
+            behaviour.Publisher.DeclarePause();
+            Assert.IsFalse(behaviour.Paused);
+            behaviour.Publisher.SetPaused(true);
+            Assert.IsTrue(behaviour.Paused);
+            Object.DestroyImmediate(go); // no Tick: nothing was sent
+        }
+
+        [Test]
         public void FireEvent_Queues_Without_Network()
         {
             var go = MakePublisher(out var behaviour);

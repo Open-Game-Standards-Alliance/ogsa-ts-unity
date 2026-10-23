@@ -18,6 +18,12 @@ namespace Ogsa.Telemetry.Unity
     /// earlier — script execution order safe). Unity's world frame
     /// (left-handed, Z-forward, Y-up) matches the OGSA-TS frame natively —
     /// pose values pass straight through with no axis remap.
+    ///
+    /// Pause (standard CONVENTIONS C-11): the publisher ticks on unscaled
+    /// real time, so it keeps streaming while the game is paused and
+    /// reports the pause on <c>session.paused</c>. Time.timeScale == 0 is
+    /// detected automatically; games that pause another way call
+    /// <see cref="SetPaused"/>.
     /// </summary>
     [AddComponentMenu("OGSA-TS/Telemetry Publisher")]
     [DisallowMultipleComponent]
@@ -53,7 +59,14 @@ namespace Ogsa.Telemetry.Unity
                  "heave reads +9.80665 at rest)")]
         public bool sendBodyDynamics = true;
 
+        [Header("Pause")]
+        [Tooltip("Report the game as paused (session.paused) while " +
+                 "Time.timeScale is 0. Games that pause another way call " +
+                 "SetPaused; both sources combine.")]
+        public bool autoDetectPause = true;
+
         Core.TelemetryPublisher? _publisher;
+        bool _manualPaused, _wasPaused;
         Core.TelemetrySender? _sender;
         bool _tornDown;
         readonly Core.BodyDynamicsDeriver _deriver = new();
@@ -96,7 +109,16 @@ namespace Ogsa.Telemetry.Unity
         {
             if (!string.IsNullOrEmpty(objectName))
                 Publisher.DeclareObject(objectName, typeLabel);
+            Publisher.DeclarePause();
         }
+
+        /// <summary>Reports a pause the engine can't see (a game-managed
+        /// pause that leaves Time.timeScale running). Combines with
+        /// autoDetectPause: the game is paused if either says so.</summary>
+        public void SetPaused(bool paused) => _manualPaused = paused;
+
+        /// <summary>Whether the publisher is currently reporting a pause.</summary>
+        public bool Paused => _publisher?.Paused ?? false;
 
         void Start()
         {
@@ -116,17 +138,26 @@ namespace Ogsa.Telemetry.Unity
         {
             var pub = _publisher;
             if (pub == null) return;
+            bool paused = _manualPaused || (autoDetectPause && Time.timeScale == 0f);
+            if (paused != pub.Paused) pub.SetPaused(paused);
             // derivation runs every tick with a pose (not just at publish
             // cadence): engine-measured velocity, quaternion-delta rates;
-            // Unity's world frame is OGSA-TS native — values pass unmapped
-            if (sendBodyDynamics && autoBindRigidbody != null)
+            // Unity's world frame is OGSA-TS native — values pass unmapped.
+            // Nothing is measured while paused (C-11); resuming starts the
+            // derivation fresh rather than differentiating across the pause
+            if (sendBodyDynamics && autoBindRigidbody != null && !paused)
             {
                 var rb = autoBindRigidbody;
                 var t = Time.timeAsDouble;
-                _deriver.Sample(t, ToCore(rb.position), ToCore(rb.rotation),
-                    hasVelocity: true, engineVelocity: ToCore(rb.velocity));
+                if (_wasPaused)
+                    _deriver.Reset(ToCore(rb.position), ToCore(rb.rotation), t);
+                else
+                    _deriver.Sample(t, ToCore(rb.position), ToCore(rb.rotation),
+                        hasVelocity: true, engineVelocity: ToCore(rb.velocity));
             }
-            pub.Tick(Time.timeAsDouble);
+            _wasPaused = paused;
+            // real time, not game time: a paused game keeps streaming
+            pub.Tick(Time.realtimeSinceStartupAsDouble);
         }
 
         void OnDestroy()
