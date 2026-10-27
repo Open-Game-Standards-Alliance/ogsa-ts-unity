@@ -31,7 +31,7 @@ Unity 2022.3+ / Unity 6. Add it to `Packages/manifest.json` as a git
 dependency pinned to a release tag (or a full commit hash):
 
 ```json
-"com.ogsa.telemetry.unity": "https://github.com/Open-Game-Standards-Alliance/ogsa-ts-unity.git#v0.2.0"
+"com.ogsa.telemetry.unity": "https://github.com/Open-Game-Standards-Alliance/ogsa-ts-unity.git#v0.3.0"
 ```
 
 or copy this folder into `Packages/` for local development. The package
