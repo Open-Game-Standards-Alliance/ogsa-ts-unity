@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# sync-core.sh — vendor the engine-agnostic core from ../ogsa-ts-dotnet.
+# sync-core.sh — vendor the engine-agnostic core from ../ogs-ts-dotnet.
 # Existing .meta files are preserved (stable GUIDs => stable references);
 # new files get generated metas. Run from the repo root after pulling
 # upstream changes:  ./sync-core.sh
 set -euo pipefail
-SRC="../ogsa-ts-dotnet/src/Ogsa.Telemetry"
+SRC="../ogs-ts-dotnet/src/Ogs.Telemetry"
 DST="Runtime/Core"
 
 # Portable 32-char lowercase-hex GUID (Unity's .meta format), without
@@ -51,7 +51,7 @@ for f in "$SRC"/Schema/*.cs; do
 done
 
 # Mirror deletions: a vendored source whose upstream file is gone (moved
-# or renamed in ogsa-ts-dotnet) is removed together with its .meta.
+# or renamed in ogs-ts-dotnet) is removed together with its .meta.
 for f in "$DST"/*.cs "$DST"/Schema/*.cs; do
   [ -f "$f" ] || continue
   if [ ! -f "$SRC/${f#"$DST"/}" ]; then

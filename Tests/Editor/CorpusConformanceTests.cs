@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Ogsa.Telemetry.Unity.Tests
+namespace Ogs.Telemetry.Unity.Tests
 {
     /// <summary>Encodes every conformance-corpus frame with the vendored
     /// core on Unity's runtime and byte-compares against the standard
@@ -14,12 +14,12 @@ namespace Ogsa.Telemetry.Unity.Tests
     {
         static string? CorpusDir()
         {
-            var env = Environment.GetEnvironmentVariable("OGSA_TS_CONFORMANCE");
+            var env = Environment.GetEnvironmentVariable("OGS_TS_CONFORMANCE");
             if (!string.IsNullOrEmpty(env) && Directory.Exists(env)) return env;
             var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
             for (; dir != null; dir = dir.Parent)
             {
-                var candidate = Path.Combine(dir.FullName, "OGSA-Telemetry-Standard", "conformance");
+                var candidate = Path.Combine(dir.FullName, "OGS-Telemetry-Standard", "conformance");
                 if (File.Exists(Path.Combine(candidate, "manifest.json"))) return candidate;
             }
             return null;
@@ -33,7 +33,7 @@ namespace Ogsa.Telemetry.Unity.Tests
         {
             var dir = CorpusDir();
             if (dir is null)
-                Assert.Ignore("OGSA-Telemetry-Standard/conformance not found (set OGSA_TS_CONFORMANCE)");
+                Assert.Ignore("OGS-Telemetry-Standard/conformance not found (set OGS_TS_CONFORMANCE)");
             var hex = string.Concat(File.ReadAllLines(Path.Combine(dir!, "vectors", id + ".hex"))
                                         .Select(l => l.Trim()));
             var expected = new byte[hex.Length / 2];

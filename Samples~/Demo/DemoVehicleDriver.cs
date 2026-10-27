@@ -1,11 +1,11 @@
 #nullable enable
 using UnityEngine;
 
-namespace Ogsa.Telemetry.Unity.Demo
+namespace Ogs.Telemetry.Unity.Demo
 {
     /// <summary>Demo driver: moves a rigidbody cube in a circle and feeds a
     /// fake RPM + speed channel so the demo scene is immediately visible in
-    /// a receiver (run ogsa-ts-dotnet's TelemetryReceive beside Unity).</summary>
+    /// a receiver (run ogs-ts-dotnet's TelemetryReceive beside Unity).</summary>
     public sealed class DemoVehicleDriver : MonoBehaviour
     {
         public float radius = 10f;
@@ -13,9 +13,9 @@ namespace Ogsa.Telemetry.Unity.Demo
         public float maxRpm = 6500f;
 
         TelemetryPublisherBehaviour? _telemetry;
-        Ogsa.Telemetry.ChannelHandle? _rpm;
-        Ogsa.Telemetry.ChannelHandle? _speed;
-        Ogsa.Telemetry.ChannelHandle? _headlights;
+        Ogs.Telemetry.ChannelHandle? _rpm;
+        Ogs.Telemetry.ChannelHandle? _speed;
+        Ogs.Telemetry.ChannelHandle? _headlights;
         double _t;
         Rigidbody? _rb;
 
@@ -30,10 +30,10 @@ namespace Ogsa.Telemetry.Unity.Demo
                 return;
             }
             _rpm = _telemetry.DeclareChannel(
-                "engine.rpm", Ogsa.Telemetry.Unit.Rpm,
+                "engine.rpm", Ogs.Telemetry.Unit.Rpm,
                 "Demo engine speed", 0, 9000);
             _speed = _telemetry.DeclareChannel(
-                "vehicle.speed", Ogsa.Telemetry.Unit.MetrePerSecond,
+                "vehicle.speed", Ogs.Telemetry.Unit.MetrePerSecond,
                 "Speed over ground", 0, 30);
             _headlights = _telemetry.DeclareBooleanChannel(
                 "lights.headlights", "Headlights on/off");
@@ -42,7 +42,7 @@ namespace Ogsa.Telemetry.Unity.Demo
             // speed is measured in km/h here (ω·r in m/s × 3.6), declared
             // m/s above.
             _telemetry.BindChannel(_speed, () => angularSpeed * radius * 3.6,
-                                   Ogsa.Telemetry.Unit.KilometrePerHour);
+                                   Ogs.Telemetry.Unit.KilometrePerHour);
             _telemetry.BindChannelRaw(_rpm, () =>
                 maxRpm * (0.5 + 0.5 * Mathf.Sin((float)_t * 2f)));
             _telemetry.BindBooleanChannel(_headlights, () => true);

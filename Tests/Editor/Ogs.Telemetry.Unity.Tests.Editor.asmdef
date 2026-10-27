@@ -1,11 +1,11 @@
 {
-    "name": "Ogsa.Telemetry.Unity.Tests.Editor",
-    "rootNamespace": "Ogsa.Telemetry.Unity.Tests",
+    "name": "Ogs.Telemetry.Unity.Tests.Editor",
+    "rootNamespace": "Ogs.Telemetry.Unity.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Ogsa.Telemetry.Unity",
-        "Ogsa.Telemetry.Core"
+        "Ogs.Telemetry.Unity",
+        "Ogs.Telemetry.Core"
     ],
     "includePlatforms": [
         "Editor"

@@ -1,14 +1,14 @@
 #nullable enable
 using System;
 using UnityEngine;
-using Core = Ogsa.Telemetry;
+using Core = Ogs.Telemetry;
 using CoreVector3 = System.Numerics.Vector3;
 using CoreQuaternion = System.Numerics.Quaternion;
 
-namespace Ogsa.Telemetry.Unity
+namespace Ogs.Telemetry.Unity
 {
     /// <summary>
-    /// OGSA-TS publisher for one vehicle/object. Configure transport and
+    /// OGS-TS publisher for one vehicle/object. Configure transport and
     /// cadence in the Inspector, declare channels in Awake/Start, then bind
     /// game values (pull) or push per tick — declarations lock at the first
     /// tick (start of the first LateUpdate after Start).
@@ -16,7 +16,7 @@ namespace Ogsa.Telemetry.Unity
     /// The sender+publisher are constructed lazily on first use (this
     /// component's Awake, or your first API call if your script's Awake ran
     /// earlier — script execution order safe). Unity's world frame
-    /// (left-handed, Z-forward, Y-up) matches the OGSA-TS frame natively —
+    /// (left-handed, Z-forward, Y-up) matches the OGS-TS frame natively —
     /// pose values pass straight through with no axis remap.
     ///
     /// Pause (standard CONVENTIONS C-11): the publisher ticks on unscaled
@@ -25,14 +25,14 @@ namespace Ogsa.Telemetry.Unity
     /// detected automatically; games that pause another way call
     /// <see cref="SetPaused"/>.
     /// </summary>
-    [AddComponentMenu("OGSA-TS/Telemetry Publisher")]
+    [AddComponentMenu("OGS-TS/Telemetry Publisher")]
     [DisallowMultipleComponent]
     public sealed class TelemetryPublisherBehaviour : MonoBehaviour
     {
         [Header("Transport")]
-        [Tooltip("Multicast group (OGSA-TS default 239.255.17.17)")]
+        [Tooltip("Multicast group (OGS-TS default 239.255.17.17)")]
         public string multicastGroup = "239.255.17.17";
-        [Tooltip("Multicast port (OGSA-TS default 40123)")]
+        [Tooltip("Multicast port (OGS-TS default 40123)")]
         public int port = 40123;
         [Tooltip("Multicast TTL — 1 keeps traffic on the local subnet")]
         public int ttl = 1;
@@ -81,7 +81,7 @@ namespace Ogsa.Telemetry.Unity
         readonly Core.BodyDynamicsDeriver _deriver = new();
 
         /// <summary>The pose→dynamics deriver behind sendBodyDynamics — for
-        /// manual binders: sample it per tick (Unity frame is OGSA-TS
+        /// manual binders: sample it per tick (Unity frame is OGS-TS
         /// native, no conversion) then Publisher.BindBodyDynamics(() =>
         /// (deriver.SpecificForce, deriver.AngularVelocity)).</summary>
         public Core.BodyDynamicsDeriver BodyDeriver => _deriver;
@@ -159,7 +159,7 @@ namespace Ogsa.Telemetry.Unity
             _deriver.GravityVector = pub.EffectiveGravity;
             // derivation runs every tick with a pose (not just at publish
             // cadence): engine-measured velocity, quaternion-delta rates;
-            // Unity's world frame is OGSA-TS native — values pass unmapped.
+            // Unity's world frame is OGS-TS native — values pass unmapped.
             // Nothing is measured while paused (C-11); resuming starts the
             // derivation fresh rather than differentiating across the pause
             if (sendBodyDynamics && autoBindRigidbody != null && !paused)
@@ -208,14 +208,14 @@ namespace Ogsa.Telemetry.Unity
         /// gravity 0, medium vacuum). Callable before the first tick and
         /// afterwards.</summary>
         public void SetEnvironment(float gravity, float airDensity, float temperature,
-                                   float pressure, Ogsa.Telemetry.Schema.ContactMedium medium)
+                                   float pressure, Ogs.Telemetry.Schema.ContactMedium medium)
             => Publisher.SetEnvironment(gravity, airDensity, temperature, pressure, medium);
 
         /// <summary>As above, with gravity as a Unity world-frame vector
         /// (m/s², pointing the way gravity pulls — Physics.gravity's
         /// convention; standard CONVENTIONS C-12).</summary>
         public void SetEnvironment(Vector3 gravity, float airDensity, float temperature,
-                                   float pressure, Ogsa.Telemetry.Schema.ContactMedium medium)
+                                   float pressure, Ogs.Telemetry.Schema.ContactMedium medium)
             => Publisher.SetEnvironment(ToCore(gravity), airDensity, temperature, pressure, medium);
 
         /// <summary>Updates only the session gravity (Unity world frame,

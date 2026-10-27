@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "com.ogsa.telemetry.unity": "file:../..",
+    "com.ogs.telemetry.unity": "file:../..",
     "com.unity.test-framework": "1.4.5"
   },
   "testables": [
-    "com.ogsa.telemetry.unity"
+    "com.ogs.telemetry.unity"
   ]
 }

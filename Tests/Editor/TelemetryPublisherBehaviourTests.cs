@@ -1,9 +1,9 @@
 #nullable enable
 using UnityEngine;
 using NUnit.Framework;
-using Ogsa.Telemetry.Unity;
+using Ogs.Telemetry.Unity;
 
-namespace Ogsa.Telemetry.Unity.Tests
+namespace Ogs.Telemetry.Unity.Tests
 {
     /// <summary>EditMode tests for the Unity wrapper — no network sends
     /// (Tick is never called; sockets are created lazily and disposed on
@@ -13,7 +13,7 @@ namespace Ogsa.Telemetry.Unity.Tests
     {
         GameObject MakePublisher(out TelemetryPublisherBehaviour behaviour)
         {
-            var go = new GameObject("ogsa_test_publisher");
+            var go = new GameObject("ogs_test_publisher");
             behaviour = go.AddComponent<TelemetryPublisherBehaviour>();
             return go;
         }
@@ -30,12 +30,12 @@ namespace Ogsa.Telemetry.Unity.Tests
         public void Channels_Declare_And_Lock_After_First_Tick()
         {
             var go = MakePublisher(out var behaviour);
-            var rpm = behaviour.DeclareChannel("engine.rpm", Ogsa.Telemetry.Unit.Rpm,
+            var rpm = behaviour.DeclareChannel("engine.rpm", Ogs.Telemetry.Unit.Rpm,
                                                "Engine speed", 0, 9000);
             Assert.AreEqual(0, rpm.Id);
             behaviour.Publisher.Tick(0.0);
             Assert.Throws<System.InvalidOperationException>(
-                () => behaviour.DeclareChannel("late.channel", Ogsa.Telemetry.Unit.Scalar));
+                () => behaviour.DeclareChannel("late.channel", Ogs.Telemetry.Unit.Scalar));
             Object.DestroyImmediate(go);
         }
 
@@ -52,7 +52,7 @@ namespace Ogsa.Telemetry.Unity.Tests
         [Test]
         public void Wheel_Declaration_Accepts_Unity_Native_Frame()
         {
-            // Unity's frame is OGSA-TS native — offsets pass straight through
+            // Unity's frame is OGS-TS native — offsets pass straight through
             var go = MakePublisher(out var behaviour);
             behaviour.AddWheel("wheel_fl", new Vector3(1.2f, 0f, 0.8f),
                                radius: 0.34f, driven: false, steered: true);

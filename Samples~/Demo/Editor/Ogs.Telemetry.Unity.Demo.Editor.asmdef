@@ -1,8 +1,8 @@
 {
-    "name": "Ogsa.Telemetry.Unity.Demo",
-    "rootNamespace": "Ogsa.Telemetry.Unity.Demo",
-    "references": [ "Ogsa.Telemetry.Core", "Ogsa.Telemetry.Unity" ],
-    "includePlatforms": [],
+    "name": "Ogs.Telemetry.Unity.Demo.Editor",
+    "rootNamespace": "Ogs.Telemetry.Unity.Demo.Editor",
+    "references": [ "Ogs.Telemetry.Core", "Ogs.Telemetry.Unity", "Ogs.Telemetry.Unity.Demo" ],
+    "includePlatforms": [ "Editor" ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

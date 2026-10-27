@@ -1,8 +1,8 @@
 {
-  "name": "com.ogsa.telemetry.unity",
+  "name": "com.ogs.telemetry.unity",
   "version": "0.3.0",
-  "displayName": "OGSA Telemetry Standard (OGSA-TS)",
-  "description": "Broadcast OGSA-TS motion/event telemetry over UDP multicast to motion platforms, haptic hardware, and dashboards on the local network. Declare channels with required units, bind game values, publish.",
+  "displayName": "OGS Telemetry Standard (OGS-TS)",
+  "description": "Broadcast OGS-TS motion/event telemetry over UDP multicast to motion platforms, haptic hardware, and dashboards on the local network. Declare channels with required units, bind game values, publish.",
   "unity": "2022.3",
   "dependencies": {
     "com.unity.modules.physics": "1.0.0"
@@ -10,7 +10,7 @@
   "samples": [
     {
       "displayName": "Demo",
-      "description": "A wired demo vehicle (kinematic cube on a circle with rpm/speed/headlights channels) and the GameObject > OGSA-TS > Create Demo Scene menu.",
+      "description": "A wired demo vehicle (kinematic cube on a circle with rpm/speed/headlights channels) and the GameObject > OGS-TS > Create Demo Scene menu.",
       "path": "Samples~/Demo"
     }
   ],
@@ -18,6 +18,6 @@
     "type": "individual",
     "url": "https://github.com/sponsors/BrianGilbert"
   },
-  "author": { "name": "Open Game Standards Alliance", "url": "https://github.com/Open-Game-Standards-Alliance" },
+  "author": { "name": "Open Game Standards", "url": "https://github.com/Open-Game-Standards" },
   "license": "MIT"
 }
