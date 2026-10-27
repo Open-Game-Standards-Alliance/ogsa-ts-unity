@@ -1,6 +1,6 @@
 {
   "name": "com.ogs.telemetry.unity",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "displayName": "OGS Telemetry Standard (OGS-TS)",
   "description": "Broadcast OGS-TS motion/event telemetry over UDP multicast to motion platforms, haptic hardware, and dashboards on the local network. Declare channels with required units, bind game values, publish.",
   "unity": "2022.3",
