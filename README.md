@@ -104,6 +104,19 @@ rigs and haptics come to rest instead of freezing mid-move or dropping
 the session. `Time.timeScale == 0` is detected automatically (`autoDetectPause`);
 games that pause another way call `SetPaused(true/false)`. Nothing to wire.
 
+## Gravity
+
+The session gravity in discovery follows `Physics.gravity`
+(`gravityFromPhysics`, on by default), at start and whenever it changes,
+and the body-dynamics derivation reacts to the same gravity, so heave at
+rest reads your scene's actual |g| ([CONVENTIONS C-12](https://github.com/Open-Game-Standards-Alliance/OGSA-Telemetry-Standard/blob/main/CONVENTIONS.md#c-12-gravity)). Gravity that is not
+straight down is declared as a world-frame vector. Gravity that varies by
+position or changes faster than discovery (planet surfaces, rotating
+habitats) binds per object with `BindLocalGravity(() => g)`, carried in
+every motion frame. `SetGravity` / `SetEnvironment` declare it by hand;
+with `gravityFromPhysics` on, that stands until `Physics.gravity` next
+changes.
+
 ## Wiring your game's values
 
 Declare channels once in setup (they lock at the first tick), bind getters to

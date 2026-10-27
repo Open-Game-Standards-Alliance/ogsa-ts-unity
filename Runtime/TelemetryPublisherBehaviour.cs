@@ -56,8 +56,16 @@ namespace Ogsa.Telemetry.Unity
                  "rates — the motion-cueing inputs) derived per tick from " +
                  "the bound body's pose and engine-measured velocity, via " +
                  "the core's BodyDynamicsDeriver (accelerometer-style: " +
-                 "heave reads +9.80665 at rest)")]
+                 "heave reads +|g| at rest, g = the declared gravity)")]
         public bool sendBodyDynamics = true;
+
+        [Header("Gravity")]
+        [Tooltip("Declare Physics.gravity as the session gravity (standard " +
+                 "CONVENTIONS C-12) at start and whenever it changes; an " +
+                 "explicit SetEnvironment/SetGravity stands until then. " +
+                 "Off: the publisher's declared gravity (standard gravity " +
+                 "unless set).")]
+        public bool gravityFromPhysics = true;
 
         [Header("Pause")]
         [Tooltip("Report the game as paused (session.paused) while " +
@@ -67,6 +75,7 @@ namespace Ogsa.Telemetry.Unity
 
         Core.TelemetryPublisher? _publisher;
         bool _manualPaused, _wasPaused;
+        Vector3? _physicsGravity; // last Physics.gravity declared
         Core.TelemetrySender? _sender;
         bool _tornDown;
         readonly Core.BodyDynamicsDeriver _deriver = new();
@@ -140,6 +149,14 @@ namespace Ogsa.Telemetry.Unity
             if (pub == null) return;
             bool paused = _manualPaused || (autoDetectPause && Time.timeScale == 0f);
             if (paused != pub.Paused) pub.SetPaused(paused);
+            if (gravityFromPhysics && Physics.gravity != _physicsGravity)
+            {
+                _physicsGravity = Physics.gravity;
+                pub.SetGravity(ToCore(Physics.gravity));
+            }
+            // derived specific force reacts to the gravity the stream
+            // declares for this object (C-12)
+            _deriver.GravityVector = pub.EffectiveGravity;
             // derivation runs every tick with a pose (not just at publish
             // cadence): engine-measured velocity, quaternion-delta rates;
             // Unity's world frame is OGSA-TS native — values pass unmapped.
@@ -193,6 +210,28 @@ namespace Ogsa.Telemetry.Unity
         public void SetEnvironment(float gravity, float airDensity, float temperature,
                                    float pressure, Ogsa.Telemetry.Schema.ContactMedium medium)
             => Publisher.SetEnvironment(gravity, airDensity, temperature, pressure, medium);
+
+        /// <summary>As above, with gravity as a Unity world-frame vector
+        /// (m/s², pointing the way gravity pulls — Physics.gravity's
+        /// convention; standard CONVENTIONS C-12).</summary>
+        public void SetEnvironment(Vector3 gravity, float airDensity, float temperature,
+                                   float pressure, Ogsa.Telemetry.Schema.ContactMedium medium)
+            => Publisher.SetEnvironment(ToCore(gravity), airDensity, temperature, pressure, medium);
+
+        /// <summary>Updates only the session gravity (Unity world frame,
+        /// Physics.gravity's convention). gravityFromPhysics does this
+        /// automatically.</summary>
+        public void SetGravity(Vector3 gravity) => Publisher.SetGravity(ToCore(gravity));
+
+        /// <summary>Binds this object's local gravity (Unity world frame,
+        /// m/s², pointing the way gravity pulls) for gravity that varies by
+        /// position or changes faster than discovery — planet surfaces,
+        /// rotating habitats. Carried in every motion frame while bound,
+        /// and fed to the body-dynamics derivation; null falls back to the
+        /// session gravity.</summary>
+        public void BindLocalGravity(Func<Vector3>? gravity)
+            => Publisher.BindLocalGravity(
+                gravity is null ? null : () => ToCore(gravity()));
 
         // ---- bindings (pull model) ----
 

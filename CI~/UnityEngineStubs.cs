@@ -35,6 +35,15 @@ namespace UnityEngine
         public float x, y, z;
         public Vector3(float x, float y, float z)
         { this.x = x; this.y = y; this.z = z; }
+        public static bool operator ==(Vector3 a, Vector3 b) => a.x == b.x && a.y == b.y && a.z == b.z;
+        public static bool operator !=(Vector3 a, Vector3 b) => !(a == b);
+        public override bool Equals(object? o) => o is Vector3 v && this == v;
+        public override int GetHashCode() => 0;
+    }
+
+    public static class Physics
+    {
+        public static Vector3 gravity { get; set; }
     }
 
     public struct Quaternion
