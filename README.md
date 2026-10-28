@@ -10,14 +10,16 @@ Unity package for the [OGS Telemetry Standard (OGS-TS)](https://github.com/Open-
 platforms, haptic hardware, dashboards, and loggers on the player's local
 network, over UDP multicast. Nothing leaves the LAN.
 
-Community & support: [Discord](https://discord.gg/tseF4Q6U99)
+Community & support: [Discord](https://discord.gg/tseF4Q6U99) · Development is funded by [sponsorship](https://github.com/sponsors/BrianGilbert)
 
-Status: **bootstrap, validated** — end-to-end against the reference receiver in Unity 2022.3 (discovery, motion, channels). `TelemetryPublisher` component, vendored
-`Ogs.Telemetry` core (netstandard2.1 / C# 9, the same source tested in
-ogs-ts-dotnet; plain C# source, no DLLs — it writes Cap'n Proto frames
-itself, with no reflection, so it runs under IL2CPP on every platform),
-and a generated demo scene. Validated against the reference
-receiver (`ogs-ts-dotnet`: `dotnet run --project src/TelemetryReceive`).
+Status: **validated, v0.4.0** — end-to-end against the reference receiver
+in Unity 2022.3 (discovery, motion, channels). `TelemetryPublisher`
+component, the vendored `Ogs.Telemetry` core (netstandard2.1 / C# 9, the
+same source tested in ogs-ts-dotnet and CI-checked for drift; plain C#
+source, no DLLs — it writes Cap'n Proto frames itself, with no
+reflection, so it runs under IL2CPP on every platform), and an importable
+demo sample. Validated against the reference receiver (`ogs-ts-dotnet`:
+`dotnet run --project src/TelemetryReceive`).
 
 **Built with AI assistance.** Significant portions of this package
 (including the vendored core and the Unity-facing wrapper) were written
